@@ -7,28 +7,40 @@ load(fullfile(ups_dir,'SW_tab_UH.mat'));
 bin_len = 30 %in s, for turning angle
 func = @(x) circ_mean(x)
 
-thdeg = 30
-pitch_thresh = 80
+thdeg = 30;
+pitch_thresh = 80;
 tab = tab_all;
 dep_tim_3 = struct; % 4 dimensional data structure [deploy, dive, t, p] for plotting
 divetab_3 = cell2table(cell(0,16), 'Variablenames', {'Deploy', 'Dive', 'Startcue', 'Endcue' , 'Max_depth', 'Surf_int', 'Head_var','Kappa', 'Tagoff', 'Turn_ang', 'H_tort', 'res_ind', 'Start_tasc','Dstart_tasc','check', 'Cross_20'});
 replace = true;
 alpha=25; %degrees, cuts off magnetometry when the sensor is too closely aligned with the earth's magnetic field
-mindivedef = 10
+mindivedef = 10;
+%df = 1;%working decimation factor
+plot = true;
 
-for i = 13 :45
+
+for i = 13:45
     tagid = char(tab.ind(i))
     calDir = char(tab.caldir(i));
     prhDir = char(tab.prhdir(i));
     settagpath('cal', calDir, 'prh', prhDir, 'audio', '')
+    
+    if strcmp(tab.ind(i), 'sw16_126a') 
+        'skipped'
+        continue;
+    end
+    
     %clf
     [Aw, M, p, pitch, roll, head, t, tt, fs, tot, Aframe] = loadPrhData_D3_AB(tagid, prhDir, calDir, species, '5');
+    
+    %Aw = Aw(1:df:length(Aw),:)
     
     if strcmp(tab.ind(i), 'sw19_243a') | strcmp(tab.ind(i), 'sw19_255d')
         load(['\\cfs.st-andrews.ac.uk\shared\smru-bk\MillerLab\Final\3S_2019\DTAG\prh\Depth_updated\', char(tab.ind(i)),'.mat'])
         p = depth;
         'depth corrected'
     end
+    
     dep_tim_3(i).deploy = tagid;
     dep_tim_3(i).dives = {};
     

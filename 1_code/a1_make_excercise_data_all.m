@@ -42,7 +42,6 @@ J = 0.03
 tmax = (1/FR)*1.5
 k=1:length(p);
 
-
 [MagAcc,pry,Sa,GLm,KKm] = magnet_rot_sa(Aw,M,fs,FR,f,alpha,1,k,J,tmax);
 OSA = sum(abs(Sa),2); %OSA per Martin Lopez et al.
 
